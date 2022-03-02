@@ -1,0 +1,84 @@
+#proj engine
+    #info
+        compiler:gcc
+        bin_name:nav
+        bin_type:dll
+
+    #dbg_arg
+        -D|DEBUG
+        -D|EXPORT_NAV_API
+
+    #rls_arg
+        |
+        -D|EXPORT_NAV_API
+
+    #inc_dir
+        engine\hdr
+        engine\dep
+
+    #src
+        engine\src\nav_io.c
+        engine\src\nav_gl.c
+        engine\src\nav_gfx.c
+        engine\src\nav_str.c
+        engine\src\nav_math.c
+        engine\src\win_nav_platform.c
+        engine\src\nav_lib.c
+        engine\src\nav.c
+
+    #dep
+        -gdi32
+        -user32
+        -dxgi
+        -d3d11
+        -opengl32
+
+#proj launcher
+    #info
+        compiler:gcc
+        bin_name:launcher
+        bin_type:exe
+
+    #dbg_arg
+        -D|DEBUG
+        -D|EXPORT_NAV_API
+
+    #rls_arg
+        |
+    
+    #res
+        launcher\res\launcher.rc
+
+    
+    #inc_dir
+        engine\hdr
+        engine\dep  
+    
+    #src
+        launcher\src\launcher.c
+    
+    #dep
+        engine\bin\dbg\nav.dll
+
+#proj game
+    #info
+        compiler:gcc
+        bin_name:game
+        bin_type:dll
+    
+    #dbg_arg
+        -D|DEBUG 
+        -D|EXPORT_NAV_GAME_API
+
+    #rls_arg
+        |
+    
+    #inc_dir
+        engine\hdr
+        engine\dep  
+    
+    #src
+        game\src\game.c
+    
+    #dep
+        engine\bin\dbg\nav.dll

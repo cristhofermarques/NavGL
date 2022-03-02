@@ -1,22 +1,22 @@
 #ifndef NAV_INPUT_H
 #define NAV_INPUT_H
 
-typedef signed char SCHAR;
+#include<nav_api.h>
 
-enum Mouse
+NAV_API enum Mouse
 {
     Left = 0,
     Scroll = 1,
     Right = 2,
 };
 
-char GetKey(char key);
-char GetKeyDown(char key);
-char GetKeyUp(char key);
-char GetMouseButton(char button);
-char GetMouseButtonDown(char button);
-char GetMouseButtonUp(char button);
+NAV_API char GetKey(char key);
+NAV_API char GetKeyDown(char key);
+NAV_API char GetKeyUp(char key);
+NAV_API char GetMouseButton(char button);
+NAV_API char GetMouseButtonDown(char button);
+NAV_API char GetMouseButtonUp(char button);
+NAV_API char GetMouseWheelDelta();
 
-SCHAR GetMouseWheelDelta();
 
 #endif

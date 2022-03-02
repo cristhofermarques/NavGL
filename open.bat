@@ -1,1 +1,2 @@
-start code .
+@start xl .
+@cmd .

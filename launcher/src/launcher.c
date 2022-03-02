@@ -1,19 +1,25 @@
-#include<nav_log.h>
 #include<nav_platform.h>
-#include<nav_input.h>
+#include<nav_game.h>
+#include<nav_str.h>
+#include<nav_api.h>
+#include<nav_log.h>
+#include<stdlib.h>
 
-int main()
+int main( int argc, char** argv)
 {
-    WND* wnd = CreateWND((char*)"Nav", 600, 480, 1);
+    int argvLen = StrLen( *argv);
 
-    while( UpdateWNDEvents( wnd))
+    char* gameLibPath = malloc( argvLen * sizeof(char));
+
+    for(int i = 0; i < argvLen; i++)
     {
-        if( GetKeyUp(0x20))
-        {
-            LOG("ok");
-        }
+        gameLibPath[i] = (*argv)[i];
     }
+    gameLibPath[ argvLen - 4] = 'd';
+    gameLibPath[ argvLen - 3] = 'l';
+    gameLibPath[ argvLen - 2] = 'l';
 
-    DeleteWND( wnd);
+    RunEngine( gameLibPath);
+    free(gameLibPath);
     return 0;
 }

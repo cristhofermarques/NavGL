@@ -7,6 +7,10 @@
         "array": "c",
         "tuple": "c",
         "type_traits": "c",
-        "utility": "c"
-    }
+        "utility": "c",
+        "nav_math.h": "c",
+        "nav_gfx.h": "c",
+        "nav_log.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }
