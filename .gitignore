@@ -1,6 +1,10 @@
 *.exe
+<<<<<<< HEAD
 *.dll
 
 build.txt
 open.bat
 _open.bat
+=======
+*.dll
+>>>>>>> parent of 7e69409 (litle fixes)
