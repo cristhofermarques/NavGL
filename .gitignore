@@ -1,2 +1,6 @@
 *.exe
 *.dll
+
+build.txt
+open.bat
+_open.bat
