@@ -1,12 +1,17 @@
 #include<nav_platform.h>
 #include<nav_game.h>
 #include<nav_lib.h>
+#include<nav_api.h>
+#include<nav_mem.h>
 #include<nav_log.h>
+#include<nav.h>
+#include<stdlib.h>
 
 #define NIL (void*)0
 
 WND* wnd;
 LIB* gameLib;
+DataBuffer* dataBuffer;
 
 VOIDCALL runGame;
 VOIDCALL endGame;
@@ -16,9 +21,9 @@ char runLoop = 1;
 char requestLoadGame = 0;
 char* requestGameLibPath;
 
-WND*  GetWND(){ return wnd;}
 
-void RunEngine(char* gameLibPath)
+// Nav Entry Point
+void RunNav(char* gameLibPath)
 {
     wnd = CreateWND( "Nav", 600, 480, 1);
     if( wnd == NIL){ return;}
@@ -32,14 +37,19 @@ void RunEngine(char* gameLibPath)
     
     UnloadGame();
     DeleteWND( wnd);
+    DeleteNavDataBuffer();
 }
 
-void RequestLoadGame( char* gameLibPath)
-{
-    requestLoadGame = 1;
-    requestGameLibPath = gameLibPath;
-}
+// Nav DataBuffer Manipulation
+void CreateNavDataBuffer( unsigned int desc[]){ dataBuffer = CreateDataBuffer( desc);}
+void DeleteNavDataBuffer(){ if( dataBuffer != NULL){ free( dataBuffer);}}
 
+// Get Nav Infos
+WND*  GetNavWND(){ return wnd;}
+DataBuffer*  GetNavDataBuffer(){ return dataBuffer;}
+
+
+// Game Lib Load
 char  LoadGame( char* gameLibPath)
 {
     LIB* lib = LoadLIB( gameLibPath);
@@ -61,8 +71,13 @@ char  LoadGame( char* gameLibPath)
     endGame = endLib;
     updateGame = updateLib;
     runGame();
-    
     return 1;
+}
+
+void RequestLoadGame( char* gameLibPath)
+{
+    requestLoadGame = 1;
+    requestGameLibPath = gameLibPath;
 }
 
 void UnloadGame()
@@ -75,4 +90,3 @@ void UnloadGame()
 }
 
 void ExitGame(){ runLoop = 0;}
-

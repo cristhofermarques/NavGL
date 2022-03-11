@@ -1,6 +1,8 @@
+#include<nav.h>
 #include<nav_gfx.h>
 #include<nav_str.h>
 #include<nav_log.h>
+#include<nav_mem.h>
 #include<nav_io.h>
 #include<nav_gl.h>
 #include<stdlib.h>
@@ -8,8 +10,9 @@
 
 unsigned int GLShaderFromFile( char* filePath)
 {
-    char* cont = GetFileText( filePath);
-    if( cont == NULL){ return 0;}
+    size_t len = 0;
+    char* cont = GetFileBufferToStackBuffer( filePath, 1, GetNavDataBuffer(), &len);
+    if( cont == NULL){ return -1;}
 
     unsigned int vertIdx, fragIdx;
 
@@ -32,7 +35,7 @@ unsigned int GLShaderFromFile( char* filePath)
         glGetShaderInfoLog( vertShaderH, 512, NULL, err);
         ERRLOG( err);
         glDeleteShader( vertShaderH);
-        free( cont);
+        FSTACKMEM( GetNavDataBuffer(),len);
         return 0;
     }
 
@@ -41,7 +44,7 @@ unsigned int GLShaderFromFile( char* filePath)
     glShaderSource( fragShaderH, 1, &fragSource, NULL);
     glCompileShader( fragShaderH);
 
-    glGetShaderiv( vertShaderH, GL_COMPILE_STATUS, &info);
+    glGetShaderiv( fragShaderH, GL_COMPILE_STATUS, &info);
     if(! info)
     {
         char err[512];
@@ -49,7 +52,7 @@ unsigned int GLShaderFromFile( char* filePath)
         ERRLOG( err);
         glDeleteShader( vertShaderH);
         glDeleteShader( fragShaderH);
-        free( cont);
+        FSTACKMEM( GetNavDataBuffer(),len);
         return 0;
     }
 
@@ -63,12 +66,12 @@ unsigned int GLShaderFromFile( char* filePath)
     if(! info)
     {
         char err[512];
-        glGetProgramInfoLog( fragShaderH, 512, NULL, err);
+        glGetProgramInfoLog( shaderH, 512, NULL, err);
         ERRLOG( err);
         glDeleteShader( vertShaderH);
         glDeleteShader( fragShaderH);
         glDeleteProgram( shaderH);
-        free( cont);
+        FSTACKMEM( GetNavDataBuffer(),len);
         return 0;
     }
 
@@ -77,6 +80,32 @@ unsigned int GLShaderFromFile( char* filePath)
     glDeleteShader( vertShaderH);
     glDeleteShader( fragShaderH);
 
-    free( cont);
+    FSTACKMEM( GetNavDataBuffer(),len);
     return shaderH;
+}
+
+unsigned int GL2DTextureFromNif( char* filePath)
+{
+    size_t len = 0;
+    NavImg* img = (NavImg*)GetFileBufferToStackBuffer( filePath, 0, GetNavDataBuffer(), &len);
+    if( img == NULL){ ERRLOG(filePath);return -1;}
+    
+    unsigned char* data = ((void*)img) + sizeof( NavImg);
+    
+    GLuint tex;
+    glGenTextures( 1, &tex);
+    glBindTexture( GL_TEXTURE_2D, tex);
+    
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, img->width, img->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (void*)data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    
+    FSTACKMEM( GetNavDataBuffer(), len);
+    
+    return tex;
 }

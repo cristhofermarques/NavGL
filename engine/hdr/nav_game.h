@@ -11,7 +11,6 @@ struct Wnd;
 NAV_API struct Wnd* GetWND();
 NAV_API void RequestLoadGame( char* gameLibPath);
 
-NAV_API void RunEngine( char* gameLibPath);
 NAV_API char LoadGame( char* gameLibPath);
 NAV_API void UnloadGame();
 NAV_API void ExitGame();

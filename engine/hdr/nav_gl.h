@@ -1,11 +1,16 @@
 #ifndef NAV_GL_H
 #define NAV_GL_H
 
+#include<nav_platform.h>
 #include<nav_api.h>
 #include<glcorearb.h>
 #include<wglext.h>
 
 NAV_API char GetGLFuncsPtrs();
+NAV_API char CreateGLContextToWND( WND* wnd, unsigned char glMajor, unsigned char glMinor, unsigned char colorBits, unsigned char depthBits);
+NAV_API void DeleteGLContextOfWND( WND* wnd);
+NAV_API unsigned int GLShaderFromFile( char* filePath);
+NAV_API unsigned int GL2DTextureFromNif( char* filePath);
 
 NAV_API PFNGLCULLFACEPROC glCullFace;
 NAV_API PFNGLFRONTFACEPROC glFrontFace;

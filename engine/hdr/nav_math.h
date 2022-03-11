@@ -6,7 +6,7 @@
 #define GBIT( value, bitIdx)( value & (1 << bitIdx))
 #define ABIT( value, bitIdx)( value |= (1 << bitIdx))
 #define DBIT( value, bitIdx)( value &= ~(1 << bitIdx))
-
+#define TRUNCAFP( value, len) value *= pow( 10, len); value = trunc( value); value /= pow( 10, len)
 
 typedef struct { int x, y;} VecI2;
 typedef struct { float x, y;} Vec2;

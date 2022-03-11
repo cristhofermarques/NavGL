@@ -1,6 +1,7 @@
 #include<nav_str.h>
 #include<nav_log.h>
 #include<stdlib.h>
+#include<math.h>
 
 unsigned int StrLen( char* str)
 {
@@ -8,19 +9,6 @@ unsigned int StrLen( char* str)
     while( str[c] != '\0'){ c++;}
     c++;
     return c;
-}
-
-char* StrFrom( char* inStr)
-{
-    unsigned int inStrLen = StrLen( inStr);
-    if( inStrLen < 1){ return NULL;}
-
-    char* str = malloc( inStrLen * sizeof(char));
-    for(int i = 0; i < inStrLen; i++)
-    {
-        str[i] = inStr[i];
-    }
-    return str;
 }
 
 int IndexOf( char* str, char* sepStr, unsigned int startIdx)
@@ -126,7 +114,7 @@ unsigned int SplitByStr( char* str, char* sepStr, unsigned int strLen, unsigned 
     return splitCount;
 }
 
-char* GetStrInBuffer( char* buffer,  unsigned int bufferLen, unsigned int idx)
+char* GetStrInBuffer( char* buffer, unsigned int bufferLen, unsigned int idx)
 {
     unsigned int currStrIdx = 0;
 
@@ -139,4 +127,104 @@ char* GetStrInBuffer( char* buffer,  unsigned int bufferLen, unsigned int idx)
     }
 
     return NULL;
+}
+
+char CharFromIntNum( unsigned int num, unsigned int idx)
+{
+    unsigned int digCount = 0;
+    unsigned int res = num;
+    while( num > pow( 10, digCount)){ digCount ++;}
+    unsigned int curr =  digCount -1;
+    
+    while(1)
+    {    
+        unsigned int powByCurr = pow( 10, curr);
+        int divRest = trunc( res / powByCurr);
+        if( curr == idx){ return 48 + divRest;}
+        res -= powByCurr * divRest;
+        curr--;
+    }
+    
+    return 0;
+}
+
+void StrFromIntNum( int num, char* outStr)
+{
+    unsigned int strPeek = 0, numPeek = 0;
+    if( num < 0){ outStr[0] = '-'; strPeek = 1;  num *= -1;}
+    while( num >  pow( 10, numPeek)){ numPeek++;}
+    numPeek--;
+    for(; numPeek > 0; numPeek--)
+    {
+        outStr[ strPeek] = CharFromIntNum( num, numPeek);
+        strPeek++;
+    }
+    outStr[ strPeek] = CharFromIntNum( num, 0);
+    strPeek++;
+    outStr[ strPeek] = '\0';
+}
+
+void StrFromFloatNum( float num, unsigned char len, char* outStr)
+{
+    float numProxy = num;
+    float tNumProxy = trunc(abs(num));
+    unsigned int amountNumsBeforeFloatPoint = 0, numPeek = 0, strPeek = 0;
+    
+    while( tNumProxy > 0)
+    {
+        tNumProxy *= 0.1f;
+        tNumProxy = round(tNumProxy);
+        amountNumsBeforeFloatPoint++;
+    }
+    
+    if( num < 0.0f){ outStr[0] = '-'; strPeek = 1;  num *= -1; amountNumsBeforeFloatPoint++;}
+    
+    numProxy = num;
+    numProxy *= pow( 10, len);
+    int intNumProxy = (int)trunc( numProxy);
+    
+    while( numProxy > pow( 10, numPeek)){ numPeek++;}
+    numPeek--;
+    
+    for(; numPeek > 0; numPeek--)
+    {
+        if( strPeek == amountNumsBeforeFloatPoint){ outStr[strPeek] = '.'; numPeek++;}
+        else
+        {
+            outStr[ strPeek] = CharFromIntNum( intNumProxy, numPeek);
+        }
+        strPeek++;
+    }
+    outStr[ strPeek] = CharFromIntNum( intNumProxy, 0);
+    strPeek++;
+    outStr[ strPeek] = '\0';
+}
+
+unsigned int IntLenAsStr( int num)
+{
+    unsigned int len = 0;
+    unsigned int numDigCount = 0;
+    if( num < 0){ len++; num *= -1;}
+    while( num > pow( 10, numDigCount)){ numDigCount++;}
+    len += numDigCount;
+    len++;
+    return len * sizeof(char);
+}
+
+unsigned int FloatLenAsStr( float num, unsigned char count)
+{
+    unsigned int len = 0;
+    int numProxy = trunc(num);
+    if( num < 0){ len++; numProxy *= -1;} // to num if its negative
+    unsigned char amountNumsBeforeFloatPoint = 0;
+    while( numProxy > 0)
+    {
+        numProxy *= 0.1f;
+        amountNumsBeforeFloatPoint++;
+    }
+    len += amountNumsBeforeFloatPoint;
+    len += count;
+    len++; // to float point char
+    len++; // to str end line char
+    return len * sizeof(char);
 }

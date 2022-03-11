@@ -128,6 +128,14 @@ LRESULT NavWNDProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case WM_MOUSEWHEEL:
             mouseWheelDelta = GET_WHEEL_DELTA_WPARAM( wParam);
         break;
+        
+        case WM_SYSKEYDOWN:
+            LOG( DEC, wParam);
+        break;
+        
+        case WM_HELP:
+            LOG( DEC, wParam);
+        break;
 
         case WM_SETFOCUS:
             PostMessage( hwnd, NAV_WND_FOCUS_CHANGE, 1, 0);
@@ -179,7 +187,7 @@ WND* CreateWND( char* title, int width, int height, char borderless)
     return wnd;
 }
 
-void DeleteWND( WND* wnd){ if( wnd != 0){  wglDeleteContext( wnd->glCtx); DestroyWindow( wnd->hwnd); free( wnd);}}
+void DeleteWND( WND* wnd){ if( wnd != 0){ DestroyWindow( wnd->hwnd); free( wnd);}}
 
 void SetWNDVisibility( WND *wnd, char visibility)
 {
@@ -300,8 +308,8 @@ char CreateGLContextToWND( WND* wnd, unsigned char glMajor, unsigned char glMino
     {
         sizeof(PIXELFORMATDESCRIPTOR), 1, 
         PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
-        PFD_TYPE_RGBA, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        32, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0
+        PFD_TYPE_RGBA, depthBits, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        colorBits, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0
     };
 
     if(! SetPixelFormat( wnd->dc, pxFmt, &pxFmtDesc)){ ERRLOG(" Set ARB Pixel Format"); return 1;}
@@ -363,4 +371,9 @@ void UnloadLIB( LIB* lib)
 void* GetLIBProcAddress( LIB* lib, char* procName)
 {
     return (void*)GetProcAddress( lib->hModule, procName);
+}
+
+void SetConsoleColor( char txtColorAttribs)
+{
+    SetConsoleTextAttribute (GetStdHandle(STD_OUTPUT_HANDLE), txtColorAttribs);
 }

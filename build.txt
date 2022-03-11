@@ -17,20 +17,19 @@
         engine\dep
 
     #src
+        engine\src\nav.c
         engine\src\nav_io.c
         engine\src\nav_gl.c
         engine\src\nav_gfx.c
         engine\src\nav_str.c
+        engine\src\nav_mem.c
+        engine\src\nav_lib.c
         engine\src\nav_math.c
         engine\src\win_nav_platform.c
-        engine\src\nav_lib.c
-        engine\src\nav.c
 
     #dep
         -gdi32
         -user32
-        -dxgi
-        -d3d11
         -opengl32
 
 #proj launcher
@@ -41,7 +40,6 @@
 
     #dbg_arg
         -D|DEBUG
-        -D|EXPORT_NAV_API
 
     #rls_arg
         |
